@@ -90,3 +90,7 @@ class logger_traceback:
 
 # traceback--打印详细错误日志
 logger = logger_traceback()
+
+
+def test():
+    pass
