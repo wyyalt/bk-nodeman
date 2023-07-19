@@ -109,6 +109,7 @@ class InstallOtherAgentService(AgentBaseService):
                     "is_manual": False,
                     "install_channel_id": host.install_channel_id,
                     "peer_exchange_switch_for_agent": host.extra_data.get("peer_exchange_switch_for_agent", 0),
+                    "enable_compression": host.extra_data.get("enable_compression", False),
                 }
             )
 
