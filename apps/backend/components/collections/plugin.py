@@ -1205,6 +1205,7 @@ class GseOperateProcService(PluginBaseService):
 
         self.request_gse_or_finish_schedule(proc_operate_req, data, common_data)
         data.outputs.polling_time = 0
+        
         return True
     
 
