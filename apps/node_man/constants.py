@@ -580,6 +580,9 @@ ResourceType = choices_to_namedtuple(RESOURCE_CHOICES)
 
 QUERY_BIZ_LENS = 200
 
+# 批量更新InstanceRecord长度默认值
+DEFAULT_BATCH_UPDATE_INSTANCE_RECORED_SIZE = 1000
+
 
 class ProxyFileFromType(Enum):
     """Proxy上传文件名称来源"""

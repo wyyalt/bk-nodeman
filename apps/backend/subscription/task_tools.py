@@ -292,6 +292,21 @@ class TaskResultTools:
         return instance_status
 
 
+def batch_update_inst_recored(status: str, record_ids: List[int], batch_size, start: int = 0):
+    to_be_updated_record_ids: List[Optional[int]] = record_ids[start : start + batch_size]
+    if not to_be_updated_record_ids:
+        # 结束递归
+        return
+    sub_inst_objs: List[models.SubscriptionInstanceRecord] = models.SubscriptionInstanceRecord.objects.filter(
+        id__in=to_be_updated_record_ids
+    )
+    for sub_inst in sub_inst_objs:
+        sub_inst.status = status
+        sub_inst.update_time = timezone.now()
+    models.SubscriptionInstanceRecord.objects.bulk_update(sub_inst_objs, fields=["status", "update_time"])
+    batch_update_inst_recored(status, record_ids, batch_size, start=start + batch_size)
+
+
 def update_inst_record_status(
     inst_record_queryset: QuerySet,
     subscription_task_id_obj_map: Dict[int, models.SubscriptionTask],
@@ -324,10 +339,12 @@ def update_inst_record_status(
         record_id_gby_status[instance_status["status"]].append(instance_status["record_id"])
 
     with transaction.atomic():
+        batch_update_size: int = models.GlobalSettings.get_config(
+            key=models.GlobalSettings.KeyEnum.BATCH_UPDATE_INSTANCE_RECORED_SIZE.value,
+            default=constants.DEFAULT_BATCH_UPDATE_INSTANCE_RECORED_SIZE,
+        )
         for status, record_ids in record_id_gby_status.items():
-            models.SubscriptionInstanceRecord.objects.filter(id__in=record_ids).update(
-                status=status, update_time=timezone.now()
-            )
+            batch_update_inst_recored(status, record_ids, batch_update_size)
 
 
 def transfer_instance_record_status(subscription_ids: List[int] = None):

@@ -156,6 +156,8 @@ class GlobalSettings(models.Model):
         SUBSCRIPTION_UPDATE_TASK_QUEUE = "SUBSCRIPTION_UPDATE_TASK_QUEUE"
         # JOB任务策略
         JOB_TASK_POLICY = "JOB_TASK_POLICY"
+        # 分片更新InstanceRecords
+        BATCH_UPDATE_INSTANCE_RECORED_SIZE = "BATCH_UPDATE_INSTANCE_RECORED_SIZE"
 
     key = models.CharField(_("键"), max_length=255, db_index=True, primary_key=True)
     v_json = JSONField(_("值"))
